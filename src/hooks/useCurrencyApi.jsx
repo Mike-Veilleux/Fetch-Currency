@@ -62,12 +62,12 @@ const useCurrencyApi = () => {
     _currencyRates,
     _inputAmount
   ) => {
-    let safeValue = 1;
+    let safeValue = 3;
     if (_inputAmount !== 0) safeValue = _inputAmount;
     //merge raw fetch data and calculate the value on the userinput
     const dataArray = Object.keys(_currencyRates).map((key) => {
       const currCode = key;
-      const calcValue = Number(_currencyRates[key] * safeValue).toFixed(2);
+      const calcValue = Number(_currencyRates[key] * _inputAmount).toFixed(2);
       const fullName = _currencyTypes[key];
       return {
         code: currCode,
