@@ -7,6 +7,7 @@ const CurrencyRates = (props) => {
       >
         <div className="col col-lg-2">{item.code}</div>
         <div className="col col-lg-4">{item.fullName}</div>
+        <div className="col col-lg-2">{item.rate}</div>
         <div className="col col-lg-2 ">{item.value}$</div>
       </div>
     );
@@ -18,6 +19,7 @@ const CurrencyRates = (props) => {
         <div className="row justify-content-md-center border rounded-2 my-3 p-1 shadow-sm mx-0 ">
           <h5 className="col col-lg-2 ">Code</h5>
           <h5 className="col col-lg-4">Full Name</h5>
+          <h5 className="col col-lg-2 ">Rate</h5>
           <h5 className="col col-lg-2 ">Value</h5>
         </div>
       )}

@@ -20,7 +20,7 @@ const Navbar = (props) => {
           className="collapse navbar-collapse justify-content-end"
           id="navbarSupportedContent"
         >
-          <form className="d-flex" onSubmit={(e) => props.handleSubmit(e)}>
+          <form className="d-flex">
             <input
               className="form-control me-2"
               type="text"
@@ -38,7 +38,11 @@ const Navbar = (props) => {
               placeholder="Amount to convert..."
               aria-label="Search"
             />
-            <button className="btn btn-success" type="submit">
+            <button
+              className="btn btn-success"
+              type="submit"
+              onSubmit={(e) => props.handleSubmit(e)}
+            >
               Convert
             </button>
           </form>

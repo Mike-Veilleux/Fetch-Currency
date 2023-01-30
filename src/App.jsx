@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CurrencyRates from "./components/CurrencyRates";
 import LetterSelectorButtons from "./components/LetterSelectorButtons";
 import Navbar from "./components/Navbar";
