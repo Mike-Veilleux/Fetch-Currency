@@ -8,7 +8,7 @@ This repo contains a currency conversion project for my MIT Full Stack developme
 
 Live demo [here](https://mike-veilleux.github.io/Fetch-Currency/)
 
-<img src="https://github.com/Mike-Veilleux/Fetch-Currency/blob/main/src/assets/ATM_Screenshot.png">
+<img src="https://github.com/Mike-Veilleux/Fetch-Currency/blob/main/src/assets/Fetch-Currency.png">
 
 ## Description
 
