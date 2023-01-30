@@ -1,16 +1,14 @@
-import { useEffect } from "react";
-
 const LetterSelectorButtons = (props) => {
   const buttons = [];
-  if (Object.keys(props.pagesDictionary).length !== 0) {
-    for (const key in props.pagesDictionary) {
+  if (Object.keys(props.currencies).length !== 0) {
+    for (const key in props.currencies) {
       buttons.push(
         <button
           className="col btn btn-block btn-outline-dark btn-sm  "
           key={key}
           type="button"
           onClick={() => {
-            props.onclickLetterBtn(key);
+            props.onClickLetterBtn(key);
           }}
         >
           {key.toUpperCase()}

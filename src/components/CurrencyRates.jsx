@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 const CurrencyRates = (props) => {
   const renderResult = props.page.map((item, index) => {
     return (
@@ -13,6 +11,7 @@ const CurrencyRates = (props) => {
       </div>
     );
   });
+
   return (
     <div>
       {props.page.length > 0 && (

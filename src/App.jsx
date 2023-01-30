@@ -5,7 +5,6 @@ import useCurrencyApi from "./hooks/useCurrencyApi";
 
 function App() {
   const currencyApi = useCurrencyApi();
-
   return (
     <div className="container">
       <Navbar {...currencyApi} />

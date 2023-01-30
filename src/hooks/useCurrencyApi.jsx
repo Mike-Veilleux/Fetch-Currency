@@ -2,79 +2,44 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useCurrencyApi = () => {
-  const [currencyTypes, setCurrencyTypes] = useState({});
   const [currencyRates, setCurrencyRates] = useState({});
+  const [currencies, setCurrencies] = useState({});
   const [inputCurrency, setInputCurrency] = useState("hkd");
   const [inputAmount, setInputAmount] = useState(1);
+  const [pageIndex, setPageIndex] = useState("h");
   const [page, setPage] = useState([]);
-  const [pagesDictionary, setPagesDictionary] = useState({});
-  const [trafficState, setTrafficState] = useState({
-    isLoading: true,
-    error: null,
-  });
 
-  const fetchCurrencyData = async () => {
+  const fetchCurrency = async () => {
     try {
-      setTrafficState({ ...trafficState, isLoading: true });
-      const responseTypes = await axios.get(
+      const responseCurrencyTypes = await axios.get(
         "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json"
       );
-
-      const responseRates = await axios.get(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${inputCurrency}.json`
-      );
-      setTrafficState({ ...trafficState, isLoading: false });
-
-      const newCurrencyTypes = responseTypes.data;
-      const newCurrencyRates = responseRates.data[inputCurrency];
-      const newPagesDictionary = buildPagesDictionary(
-        newCurrencyTypes,
-        newCurrencyRates,
-        inputAmount
-      );
-
-      setCurrencyTypes(newCurrencyTypes);
-      setCurrencyRates(newCurrencyRates);
-      setPagesDictionary(newPagesDictionary);
+      const newCurrencies = buildMainDictionary(responseCurrencyTypes.data);
+      setCurrencies(newCurrencies);
     } catch (error) {
-      setTrafficState({ ...trafficState, error: error });
       console.log(error);
     }
   };
 
-  // const fetchCurrencyRates = async (_inputCurrency) => {
-  //   try {
-  //     setTrafficState({ ...trafficState, isLoading: true });
-  //     const responseRates = await axios.get(
-  //       `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${_inputCurrency}.json`
-  //     );
-  //     setCurrencyRates(response.data[_inputCurrency]);
-  //     setTrafficState({ ...trafficState, isLoading: false });
-  //     //return responseRates.data[_inputCurrency];
-  //   } catch (error) {
-  //     setTrafficState({ ...trafficState, error: error });
-  //     console.log(error);
-  //   }
-  // };
+  const fetchRates = async (_inputCurrency) => {
+    try {
+      const responseRates = await axios.get(
+        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${_inputCurrency}.json`
+      );
+      const newCurrencyRates = responseRates.data[_inputCurrency];
 
-  const buildPagesDictionary = (
-    _currencyTypes,
-    _currencyRates,
-    _inputAmount
-  ) => {
-    let safeValue = 3;
-    if (_inputAmount !== 0) safeValue = _inputAmount;
-    //merge raw fetch data and calculate the value on the userinput
-    const dataArray = Object.keys(_currencyRates).map((key) => {
-      const currCode = key;
-      const calcValue = Number(_currencyRates[key] * _inputAmount).toFixed(2);
-      const fullName = _currencyTypes[key];
-      return {
-        code: currCode,
-        fullName: fullName,
-        value: calcValue,
-      };
-    });
+      const newDicWithRates = addNewRatesToDictionary(
+        currencies,
+        newCurrencyRates
+      );
+
+      setCurrencies(newDicWithRates);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const buildMainDictionary = (_currencyTypes) => {
     //-------------------------------------------------------------------------
     // Build a dictionary with keys based on first letter of currency code
     // Each key will contain an array of object where the code's first letter
@@ -85,13 +50,14 @@ const useCurrencyApi = () => {
     //
     //-------------------------------------------------------------------------
     let paginatedObj = {};
-    dataArray.forEach((item) => {
-      const firstLetter = item.code.charAt(0);
 
+    Object.keys(_currencyTypes).forEach((key) => {
+      const firstLetter = key.charAt(0);
       const newEntry = {
-        code: item.code,
-        fullName: item.fullName,
-        value: item.value,
+        code: key,
+        fullName: _currencyTypes[key],
+        rate: 0,
+        value: 0,
       };
       // if key does not exist => add new array with item
       if (!(firstLetter in paginatedObj)) {
@@ -109,36 +75,58 @@ const useCurrencyApi = () => {
     return paginatedObj;
   };
 
-  const onclickLetterBtn = (key) => {
-    const newPagesDictionary = pagesDictionary[key];
-    setPage(newPagesDictionary);
+  const addNewRatesToDictionary = (_dic, _rates) => {
+    Object.keys(_dic).forEach((key) => {
+      _dic[key].forEach((item) => {
+        item.rate = _rates[item.code];
+      });
+    });
+    return _dic;
   };
 
-  const handleSubmit = (event) => {
+  const buildPage = () => {
+    const currArray = [...currencies[pageIndex]];
+    const newCalculation = currArray.map((item) => {
+      const calcVal = (inputAmount * item.rate).toFixed(2);
+      return { ...item, value: calcVal };
+    });
+    setPage(newCalculation);
+  };
+
+  const onClickLetterBtn = (key) => {
+    setPageIndex(key);
+    buildPage();
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const currencyInputValue = event.target.searchInput.value;
     const amountInputValue = event.target.valueInput.value;
+    if (currencyInputValue !== inputCurrency) {
+      fetchRates(currencyInputValue);
+    }
     setInputAmount(amountInputValue);
     setInputCurrency(currencyInputValue);
+    buildPage();
   };
 
   useEffect(() => {
     let isApiSubscribed = true;
-    fetchCurrencyData();
-    return () => (isApiSubscribed = false);
-  }, [inputCurrency]);
+    if (isApiSubscribed) {
+      fetchCurrency();
+      fetchRates(inputCurrency);
+    }
+
+    return () => {
+      isApiSubscribed = false;
+    };
+  }, []);
 
   return {
-    trafficState,
-    currencyTypes,
-    currencyRates,
-    inputAmount,
     page,
-    pagesDictionary,
-    onclickLetterBtn,
-    buildPagesDictionary,
+    currencies,
+    onClickLetterBtn,
     handleSubmit,
-    setPage,
   };
 };
 

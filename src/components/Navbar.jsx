@@ -1,6 +1,3 @@
-import React from "react";
-import TrafficState from "./TrafficState";
-
 const Navbar = (props) => {
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark">
@@ -23,7 +20,6 @@ const Navbar = (props) => {
           className="collapse navbar-collapse justify-content-end"
           id="navbarSupportedContent"
         >
-          <TrafficState {...props} />
           <form className="d-flex" onSubmit={(e) => props.handleSubmit(e)}>
             <input
               className="form-control me-2"
