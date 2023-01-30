@@ -1,6 +1,6 @@
 const LetterSelectorButtons = (props) => {
   const buttons = [];
-  if (Object.keys(props.currencies).length !== 0) {
+  if (Object.keys(props.currencies) !== null) {
     for (const key in props.currencies) {
       buttons.push(
         <button

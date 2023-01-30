@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useCurrencyApi = () => {
-  const [currencyRates, setCurrencyRates] = useState({});
   const [currencies, setCurrencies] = useState({});
   const [inputCurrency, setInputCurrency] = useState("hkd");
   const [inputAmount, setInputAmount] = useState(1);
@@ -16,6 +15,10 @@ const useCurrencyApi = () => {
       );
       const newCurrencies = buildMainDictionary(responseCurrencyTypes.data);
       setCurrencies(newCurrencies);
+      console.log(
+        "🚀 ~ file: useCurrencyApi.jsx:35 ~ useCurrencyApi ~ currencies",
+        currencies
+      );
     } catch (error) {
       console.log(error);
     }
@@ -34,6 +37,10 @@ const useCurrencyApi = () => {
       );
 
       setCurrencies(newDicWithRates);
+      console.log(
+        "🚀 ~ file: useCurrencyApi.jsx:35 ~ useCurrencyApi ~ currencies",
+        currencies
+      );
     } catch (error) {
       console.log(error);
     }
@@ -114,7 +121,6 @@ const useCurrencyApi = () => {
     let isApiSubscribed = true;
     if (isApiSubscribed) {
       fetchCurrency();
-      fetchRates(inputCurrency);
     }
 
     return () => {
