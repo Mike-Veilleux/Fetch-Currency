@@ -86,6 +86,7 @@ const useCurrencyApi = () => {
       const responseCurrencyMapping = await axios.get(
         "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json"
       );
+
       // build new object with final data structure
       let paginatedObj = {};
       Object.keys(responseCurrencyMapping.data).forEach((key) => {
